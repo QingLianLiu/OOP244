@@ -1,0 +1,183 @@
+Script started on Mon May 18 17:23:03 2015
+[?1034hbash-3.2$  wh[K[K[Kwhoami
+larissa
+bash-3.2$ cat w1.h w1.cpp checkout.h checkout.cpp
+const char* printMsg = "Finished... Exiting\n"; //End message
+const char* errMsg = "Try again\n"; //Error message
+const char* cancelMsg = "Order cancelled - Start again\n"; //Cancel message
+
+// OOP244 Workshop 1: Compiling modular source code
+// File w1step1.cpp
+// Version 1.0
+// Date 2015/05/07
+// Author Franz Newland
+// Description
+// This provides some source code in a single file to break
+// into modules and compile together
+//
+// Revision History
+// -----------------------------------------------------------
+// Name Date Reason
+// F.Newland 2015/01/09 Preliminary release
+// Larissa Voigt 2015/05/17 Modularizating program
+/////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <iomanip>
+#include "w1.h"
+#include "checkout.h"
+using namespace std;
+
+
+//Functions
+int main(){
+  int iCost = 0; // Selected item cost
+  int iTotal = 0;
+  cout << "SeneKEA Order Tool\n"
+    << "======================\n";
+  // process user input
+  while (iCost != 10){
+    iCost = checkout();
+    if (iCost == 0)
+      cout << errMsg;
+    else if (iCost == -1) {
+      iTotal = 0;
+      cout << cancelMsg;
+    }
+    else if (iCost == 10) {
+      cout << "Total is $" << iTotal << endl;
+      cout << printMsg;
+    }
+    else {
+      cout << "Total increases by $" << iCost << endl;
+      iTotal += iCost;
+    }
+  }
+  return 0;
+}
+int checkout(); // Display menu and return selection
+
+#include <iostream>
+#include "checkout.h"
+using namespace std;
+
+// int checkout()
+// Description: prompts for and accepts an option selection from
+// standard input and returns the integer price for the selected option
+// Outputs: returns the price of the selected option, -1 to cancel, 10 to pay
+// or 0 otherwise
+///////////////////////////////////////////////////////////////////////////
+int checkout(){
+  int iSelection = 0; //storage of the user response
+  int iPrice = 0;
+  cout << '\n';
+  cout << "Please select from the following options :\n";
+  cout << " 1 Shelf unit $2\n";
+  cout << " 2 Desk $4\n";
+  cout << " 3 Bed $4\n";
+  cout << " 4 Chair $2\n";
+  cout << " 5 Pay\n";
+  cout << " 6 Cancel\n";
+  cin >> iSelection;
+  if ((iSelection > 0) && (iSelection < 7)){//if user response is valid
+    if (iSelection == 1 || iSelection == 4)
+      iPrice = 2;
+    else if (iSelection < 5)
+      iPrice = 4;
+    else if (iSelection == 5)
+      iPrice = 10;
+    else
+      iPrice = -1;
+    cout << "Thank you\n";
+  }
+  else
+    cout << "Incorrect entry\n";
+  return iPrice;
+}
+bash-3.2$ cat Makefile
+# Makefile for Workshop 1 - GCC Platform
+# Makefile
+#----------------------------------------------------------
+# Platform Variables
+# uncomment to select option
+OPT=-Wall -std=c++0x
+#OPT=-std=c++0x
+#----------------------------------------------------------
+# Set of Rules
+# links the binary components together to form the executable
+w1: w1.o checkout.o
+	g++ -o w1 w1.o checkout.o
+# recompiles w1.cpp if any recent changes have affected it
+w1.o: w1.cpp w1.h
+	g++ -c $(OPT) w1.cpp
+# recompiles checkout.cpp if any recent changes have affected it
+checkout.o: checkout.cpp checkout.h
+	g++ -c $(OPT) checkout.cpp
+# removes intermediate files
+clean:
+	rm *.o
+bash-3.2$ make
+g++ -o w1 w1.o checkout.o
+bash-3.2$ w[K./w1
+SeneKEA Order Tool
+======================
+
+Please select from the following options :
+ 1 Shelf unit $2
+ 2 Desk $4
+ 3 Bed $4
+ 4 Chair $2
+ 5 Pay
+ 6 Cancel
+1
+Thank you
+Total increases by $2
+
+Please select from the following options :
+ 1 Shelf unit $2
+ 2 Desk $4
+ 3 Bed $4
+ 4 Chair $2
+ 5 Pay
+ 6 Cancel
+2
+Thank you
+Total increases by $4
+
+Please select from the following options :
+ 1 Shelf unit $2
+ 2 Desk $4
+ 3 Bed $4
+ 4 Chair $2
+ 5 Pay
+ 6 Cancel
+3
+Thank you
+Total increases by $4
+
+Please select from the following options :
+ 1 Shelf unit $2
+ 2 Desk $4
+ 3 Bed $4
+ 4 Chair $2
+ 5 Pay
+ 6 Cancel
+4
+Thank you
+Total increases by $2
+
+Please select from the following options :
+ 1 Shelf unit $2
+ 2 Desk $4
+ 3 Bed $4
+ 4 Chair $2
+ 5 Pay
+ 6 Cancel
+5
+Thank you
+Total is $12
+Finished... Exiting
+bash-3.2$ exit
+exit
+
+Script done on Mon May 18 17:23:49 2015
