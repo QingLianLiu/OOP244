@@ -11,7 +11,7 @@
 // -----------------------------------------------------------
 // Name Date Reason
 // F.Newland 2015/01/09 Preliminary release
-// Larissa Voigt 2015/05/17 Modularizating program
+// Larissa Voigt 2015/05/17 Modular program
 /////////////////////////////////////////////////////////////////
 
 #include <iostream>
