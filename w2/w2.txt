@@ -1,0 +1,179 @@
+Script started on Tue May 26 23:48:14 2015
+[?1034hbash-3.2$ whoami
+larissa
+bash-3.2$ cat w2.cpp 
+// OOP244 Workshop 2: Compound types and privacy
+// File w2.cpp
+// Version 1.0
+// Date 2015/05/14
+// Author Franz Newland
+// Description
+// This file is used to demonstrate classes in C++ and
+// how member variables can be defined as private but
+// accessed through member functions
+//
+// Revision History
+///////////////////////////////////////////////////////////
+// Name Date Reason
+// F.Newland 2015/05/14 Preliminary release
+///////////////////////////////////////////////////////////
+#include <iostream>
+#include "AccountNumber.h"
+using namespace std;
+using namespace oop244;
+
+int main(){
+   AccountNumber myNumber;
+   char name[41];
+   int bankCode;
+   int branchCode;
+   int number;
+
+   cout << "Bank account app" << endl << "===================" << endl << endl;
+   cout << "Please enter your name: ";
+
+   cin >> name;
+
+   cout << "please enter your bank and branch code and account number separated by space."<<endl<<"999 999 99999: ";
+
+   cin >> bankCode >> branchCode >> number;
+
+   myNumber.setName(name);
+   myNumber.setAccountNumber(bankCode, branchCode, number);
+
+   if (!myNumber.isValid()){
+      cout << "The bank account number entered is invalid." << endl << "please use the following format: 999 999 99999"<<endl<<endl;
+   }
+
+   myNumber.display();
+   return 0;
+}
+bash-3.2$ cat AccountNumber.h 
+/*  OOP244 - Workshop 2
+ *  Date: 25/05/2015
+ *  Author: Larissa Voigt
+ *  Description: Implement header file on w2.cpp */
+
+#define MAX_NAME_LENGTH 41
+
+namespace oop244 {
+  class AccountNumber {
+    private:
+      char _name[MAX_NAME_LENGTH + 1];
+      int _bankCode;
+      int _branchCode;
+      int _accountNumber;
+      bool _validAccNumber;
+    public:
+      void setName(const char name[]);
+      void setAccountNumber(int bankCode, int branchCode, int accountNumber);
+      void display() const;
+      bool isValid() const;
+  };
+}
+bash-3.2$ cat AccountNumber.h [K[Kcpp
+/*  OOP244 - Workshop 2
+ *  Date: 25/05/2015
+ *  Author: Larissa Voigt
+ *  Description: Place your member function definitions */
+
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include "AccountNumber.h"
+
+using namespace std;
+
+#define MIN_BANKCODE 100
+#define MAX_BANKCODE 999
+#define MIN_BRANCHCODE 1
+#define MAX_BRANCHCODE 220
+#define MIN_ACCNO 10000
+#define MAX_ACCNO 99999
+
+
+namespace oop244 {
+  void AccountNumber::setName(const char name[]) {
+    strcpy(_name, name);
+  }
+
+  void AccountNumber::setAccountNumber(int bankCode, int branchCode, int accountNumber) {
+    _bankCode = bankCode;
+    _branchCode = branchCode;
+    _accountNumber = accountNumber;
+
+    if ((_bankCode >= MIN_BANKCODE && _bankCode <= MAX_BANKCODE) &&
+        (_branchCode >= MIN_BRANCHCODE && _branchCode <= MAX_BRANCHCODE) &&
+        (_accountNumber >= MIN_ACCNO && _accountNumber <= MAX_ACCNO)) {
+      _validAccNumber = true;
+    } else {
+      _validAccNumber = false;
+    }
+    }
+
+  void AccountNumber::display() const {
+    if(_validAccNumber == true) {
+      cout << "name: " << _name << ", Account number: " << _bankCode << "-"
+         << _branchCode << "-" << _accountNumber << endl;
+    } else {
+      cout << _name << " does not have a valid account number." << endl;
+    }
+  }
+
+  bool AccountNumber::isValid() const {
+    return _validAccNumber;
+  }
+}
+
+
+bash-3.2$  g++ -o w2 w2.cpp AccountNumber.cpp
+bash-3.2$ ./w1[K2
+Bank account app
+===================
+
+Please enter your name: Test
+please enter your bank and branch code and account number separated by space.
+999 999 99999: 500 8000  90000
+The bank account number entered is invalid.
+please use the following format: 999 999 99999
+
+Test does not have a valid account number.
+bash-3.2$ ./w2 g++ -o w2 w2.cpp AccountNumber.cpp[C[C[C[C[C[C[C[C[C[C./w2[K
+Bank account app
+===================
+
+Please enter your name: Test
+please enter your bank and branch code and account number separated by space.
+999 999 99999: 101 219 9 40000
+name: Test, Account number: 101-219-40000
+bash-3.2$ ./w2
+Bank account app
+===================
+
+Please enter your name: 0 -1      Test
+please enter your bank and branch code and account number separated by space.
+999 999 99999: 0 0 0
+The bank account number entered is invalid.
+please use the following format: 999 999 99999
+
+Test does not have a valid account number.
+bash-3.2$ ./w2
+Bank account app
+===================
+
+Please enter your name: Test
+please enter your bank and branch code and account number separated by space.
+999 999 99999: 999 200  20 99999
+name: Test, Account number: 999-220-99999
+bash-3.2$ ./w2
+Bank account app
+===================
+
+Please enter your name: Test
+please enter your bank and branch code and account number separated by space.
+999 999 99999: 100 1 10000
+name: Test, Account number: 100-1-10000
+bash-3.2$ exit
+exit
+
+Script done on Tue May 26 23:52:08 2015
