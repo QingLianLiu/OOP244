@@ -1,0 +1,171 @@
+Script started on Tue Jun 16 20:50:37 2015
+[?1034hbash-3.2$ whoami
+larissa
+bash-3.2$ cat CreditStatement.h CreditStatement.cpp
+/* OOP244 = Workshop 5
+ * CreditStatement.h
+ * Date: 15/06/15
+ * Author: Larissa Voigt
+ * Description: Implement header file on w5.cpp */
+
+class CreditStatement {
+  private:
+    char* item;
+  public:
+    double price;
+    CreditStatement();
+    CreditStatement(char* i, double p);
+    CreditStatement(const CreditStatement&);
+    CreditStatement& operator=(const CreditStatement&);
+    ~CreditStatement();
+    void display() const;
+    bool isGreaterThan(const CreditStatement&) const;
+};
+/* OOP244 - Workshop5
+ * CreditStatement.cpp
+ * Date: 15/06/15
+ * Author: Larissa Voigt
+ * Description: Implement function definitions on w5.cpp */
+
+#include <new>
+#include <iostream>
+#include <string.h>
+#include <iomanip>
+#include "CreditStatement.h"
+
+using namespace std;
+
+//Default Constructor
+CreditStatement::CreditStatement() {
+  item = nullptr;
+  price = 0;
+}
+
+//Overloaded Constructor
+CreditStatement::CreditStatement(char* i, double p){
+  if(i != nullptr && p > 0.0) {
+      price = p;
+      item = new (nothrow) char[strlen(i) + 1];
+      if (item != nullptr){
+        strncpy(item, i, strlen(i)+1);
+      }
+  } else {
+    *this = CreditStatement();
+  }
+}
+
+//Deconstructor
+CreditStatement::~CreditStatement() {
+  if(item != nullptr) {
+    delete [] item;
+    item = nullptr;
+  }
+}
+
+// Copy Constructor
+CreditStatement::CreditStatement(const CreditStatement& src) {
+  *this = CreditStatement(src.item, src.price);
+}
+
+// Assignment operator
+CreditStatement& CreditStatement::operator=(const CreditStatement& src) {
+  if (this != &src) {
+    price = src.price;
+    delete [] item;
+    if (src.item != nullptr){
+      item = new (nothrow) char[strlen(src.item) + 1];
+      strncpy(item, src.item, strlen(src.item)+1);
+    } else {
+      item = nullptr;
+    }
+  }
+  return *this;
+}
+
+void CreditStatement::display() const{
+  cout << setw(26) << right << item << fixed << setprecision(2) << setw(8) << right << price <<  endl;
+}
+
+bool CreditStatement::isGreaterThan(const CreditStatement& other) const{
+  return price > other.price;
+}
+
+/*
+int main()
+{
+  char *name = strdup("fuck");
+  CreditStatement *a = new CreditStatement(name, 5.0);
+  CreditStatement *c = new CreditStatement(name, 1.0);
+  a->display();
+  CreditStatement *b = a;
+  *b = *c;
+  b->display();
+}
+*/
+bash-3.2$ g++ -o w5 CreditStatement.cpp w5.cpp
+bash-3.2$ ./w5 
+Credit Statement Processor
+==========================
+Item price (0 to quit): 12
+Statement item: Pizza
+Item price (0 to quit): 25    50
+Statement item: Italian foof d
+Item price (0 to quit): 7
+Statement item: Burrito
+Item price (0 to quit): 0
+
+         Credit Statement
+
+ Item                        Price
+----------------------------------
+                     Pizza   12.00
+              Italian food   50.00
+                   Burrito    7.00
+
+bash-3.2$ ./w5 
+Credit Statement Processor
+==========================
+Item price (0 to quit): 100
+Statement item: Fo  Shoppers
+Item price (0 to quit): 55
+Statement item: Sephora
+Item price (0 to quit): 500.90
+Statement item: Homesense
+Item price (0 to quit): 12
+Statement item: Taco Bell
+Item price (0 to quit): 25
+Statement item: Gas
+
+         Credit Statement
+
+ Item                        Price
+----------------------------------
+                  Shoppers  100.00
+                   Sephora   55.00
+                 Homesense  500.90
+                 Taco Bell   12.00
+                       Gas   25.00
+
+bash-3.2$ ./w5 
+Credit Statement Processor
+==========================
+Item price (0 to quit): 77
+Statement item: Dod   g Food
+Item price (0 to quit): 190.80
+Statement item: Loblaws
+Item price (0 to quit): 97
+Statement item: Hydro
+Item price (0 to quit): 0
+
+         Credit Statement
+
+ Item                        Price
+----------------------------------
+                  Dog Food   77.00
+                   Loblaws  190.80
+                     Hydro   97.00
+
+bash-3.2$ exit
+exit
+
+Script done on Tue Jun 16 20:53:11 2015
