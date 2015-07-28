@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <iomanip>
+#include <new>
 #include "SuperHero.h"
 
 SuperHero::SuperHero() {
@@ -45,3 +46,31 @@ void SuperHero::display(std::ostream& os) const {
     os << std::endl;
   }
 }
+
+SuperHero::SuperHero(const SuperHero& src) {
+  *this = src;
+}
+
+SuperHero& SuperHero::operator=(const SuperHero& hero) {
+  if(this != &hero) {
+    delete [] powers;
+    if (hero.powers != nullptr) {
+      powers = new (std::nothrow) int[hero.pMax];
+      for(int i = 0; i < hero.aSize; i++) {
+        powers[i] = hero.powers[i];
+      }
+    }
+  } else {
+      powers = nullptr;
+    }
+  return *this;
+}
+
+SuperHero::~SuperHero() {
+  if(powers != nullptr) {
+    delete [] powers;
+    powers = nullptr;
+  }
+}
+
+
