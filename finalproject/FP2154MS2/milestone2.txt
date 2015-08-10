@@ -1,0 +1,219 @@
+Script started on Sun Aug  2 14:01:06 2015
+[?1034hbash-3.2$ whoami
+larissa
+bash-3.2$ cat ReadWrite.h ReadWriteTester.cpp MyFile.cpp readwrite.txt 
+#ifndef __244__READWRITE_H__
+#define __244__READWRITE_H__
+
+// hearder file includes go here
+#include <iostream>
+#include <fstream>
+
+namespace oop244{
+
+    // read write class with pure virutal methods go here
+    class ReadWrite {
+      public:
+        virtual std::fstream& store(std::fstream& file)const = 0;
+        virtual std::fstream& load(std::fstream& file) = 0;
+        virtual std::ostream& display(std::ostream& os, bool linear)const = 0;
+        virtual std::istream& conInput(std::istream& is) = 0;
+    };
+}
+#endif
+#include <iostream>
+#include "MyFile.h"
+using namespace std;
+using namespace oop244;
+int main(){
+  fstream file;
+  MyFile F("readwrite.txt");
+  cout << "Run this program few times and keep adding to" <<endl<<"the content of the file created." << endl;
+  F.load(file);
+  cout << "Linear content of file readwrite.txt: " << endl << endl << F << endl;
+  cout << "Press <ENTER> to continue...";
+  cin.ignore();
+  cout << endl << "readwrite.txt as is: " << endl;
+  F.print();
+  cout << " ---------------- " << endl << "Enter a text and then"
+        <<endl<<"On windows end it by pressing <Ctrl-Z> and <ENTER> in a new line"
+        <<endl<<"On Linux or mac end it with a new line with <Ctrl-D>"
+        <<endl<< "to append to the end of readwrite.txt:" << endl;
+  cin >> F;
+  F.store(file);
+  cout << "Re-run the program to see the appended lines." << endl;
+  return 0;
+}
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include "MyFile.h"
+using namespace std;
+namespace oop244{
+
+  MyFile::MyFile(const char* fname){
+      _text[0] = char(0);
+      strcpy(_fname, fname);
+    }
+  fstream& MyFile::store(std::fstream& file)const{
+      file.open(_fname, ios::app|ios::out);
+      int i = 0;
+      while (_text[i]){
+            file << _text[i];
+            i++;
+          }
+      file.close();
+      return file;
+    }
+  fstream& MyFile::load(std::fstream& file){
+      file.open(_fname, ios::in);
+      int i=0;
+      while (!file.fail()){
+            _text[i++] = file.get();
+          }
+      file.clear();
+      file.close();
+      if(i > 0) i--;
+      _text[i] = 0;
+      return file;
+    }
+  ostream& MyFile::display(std::ostream& os, bool linear)const{
+      for (int i = 0; _text[i]; i++){
+            if (linear && _text[i] == '\n'){
+                    os << " ";
+                  }
+            else{
+                    os << _text[i];
+                  }
+          }
+      return os;
+    }
+  istream& MyFile::conInput(std::istream& is){
+      is.getline(_text, 9999, EOF);
+      return is;
+    }
+  void MyFile::print(){
+      display(cout, false);
+      cout << endl;
+    }
+  std::ostream& operator<<(std::ostream& os, const MyFile& RO){
+      return RO.display(os, true);
+    }
+  std::istream& operator>>(std::istream& is, MyFile& RO){
+      return RO.conInput(is);
+    }
+}
+Three little kittens,
+They lost their mittens,
+And they began to cry,
+Oh, mother dear,
+We sadly fear
+Our mittens we have lost.
+What! Lost your mittens,
+You naughty kittens!
+Then you shall have no pie.
+Mee-ow, mee-ow,
+You shall have no pie.
+
+The three little kittens,
+They found their mittens,
+And they began to cry,
+Oh, mother dear,
+See here, see here,
+Our mittens we have found.
+What! Found your mittens,
+You darling kittens!
+Then you shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+bash-3.2$ g++ -o w2 MyFile.cpp Reas[KdWriteTester.cpp 
+bash-3.2$ ./w2
+Run this program few times and keep adding to
+the content of the file created.
+Linear content of file readwrite.txt: 
+
+Three little kittens, They lost their mittens, And they began to cry, Oh, mother dear, We sadly fear Our mittens we have lost. What! Lost your mittens, You naughty kittens! Then you shall have no pie. Mee-ow, mee-ow, You shall have no pie.  The three little kittens, They found their mittens, And they began to cry, Oh, mother dear, See here, see here, Our mittens we have found. What! Found your mittens, You darling kittens! Then you shall have some pie. Mee-ow, mee-ow, You shall have some pie. Mee-ow, mee-ow, You shall have some pie. 
+Press <ENTER> to continue...
+
+readwrite.txt as is: 
+Three little kittens,
+They lost their mittens,
+And they began to cry,
+Oh, mother dear,
+We sadly fear
+Our mittens we have lost.
+What! Lost your mittens,
+You naughty kittens!
+Then you shall have no pie.
+Mee-ow, mee-ow,
+You shall have no pie.
+
+The three little kittens,
+They found their mittens,
+And they began to cry,
+Oh, mother dear,
+See here, see here,
+Our mittens we have found.
+What! Found your mittens,
+You darling kittens!
+Then you shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+
+ ---------------- 
+Enter a text and then
+On windows end it by pressing <Ctrl-Z> and <ENTER> in a new line
+On Linux or mac end it with a new line with <Ctrl-D>
+to append to the end of readwrite.txt:
+h Hi, my name s is Larissa Voigt!
+^DRe-run the program to see the appended lines.
+bash-3.2$ ./w2
+Run this program few times and keep adding to
+the content of the file created.
+Linear content of file readwrite.txt: 
+
+Three little kittens, They lost their mittens, And they began to cry, Oh, mother dear, We sadly fear Our mittens we have lost. What! Lost your mittens, You naughty kittens! Then you shall have no pie. Mee-ow, mee-ow, You shall have no pie.  The three little kittens, They found their mittens, And they began to cry, Oh, mother dear, See here, see here, Our mittens we have found. What! Found your mittens, You darling kittens! Then you shall have some pie. Mee-ow, mee-ow, You shall have some pie. Mee-ow, mee-ow, You shall have some pie. Hi, my name is Larissa Voigt! 
+Press <ENTER> to continue...
+
+readwrite.txt as is: 
+Three little kittens,
+They lost their mittens,
+And they began to cry,
+Oh, mother dear,
+We sadly fear
+Our mittens we have lost.
+What! Lost your mittens,
+You naughty kittens!
+Then you shall have no pie.
+Mee-ow, mee-ow,
+You shall have no pie.
+
+The three little kittens,
+They found their mittens,
+And they began to cry,
+Oh, mother dear,
+See here, see here,
+Our mittens we have found.
+What! Found your mittens,
+You darling kittens!
+Then you shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+Mee-ow, mee-ow,
+You shall have some pie.
+Hi, my name is Larissa Voigt!
+
+ ---------------- 
+Enter a text and then
+On windows end it by pressing <Ctrl-Z> and <ENTER> in a new line
+On Linux or mac end it with a new line with <Ctrl-D>
+to append to the end of readwrite.txt:
+^DRe-run the program to see the appended lines.
+bash-3.2$ exit
+exit
+
+Script done on Sun Aug  2 14:02:57 2015
