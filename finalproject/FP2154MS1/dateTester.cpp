@@ -15,7 +15,7 @@
 
 
 #include <iostream>
-#include "date.h"
+#include "Date.h"
 #include "general.h"
 using namespace oop244;
 using namespace std;
@@ -79,16 +79,16 @@ Date getDate(){
     switch (D.errCode())    {
     case CIN_FAILED:
       cin.clear();
-      cout << "Invlid date Entry";
+      cout << "Invalid date Entry";
       break;
     case YEAR_ERROR:
-      cout << "Invlid year; " << MIN_YEAR << "<= year <= " << MAX_YEAR;
+      cout << "Invalid year; " << MIN_YEAR << "<= year <= " << MAX_YEAR;
       break;
     case MON_ERROR:
-      cout << "Invlid month, 1<=Mon<=12";
+      cout << "Invalid month, 1<=Mon<=12";
       break;
     case DAY_ERROR:
-      cout << "Invlid Day, 1<=Day<=" << D.mdays();
+      cout << "Invalid Day, 1<=Day<=" << D.mdays();
     }
     cin.ignore(2000, '\n');
   } while (D.bad() && cout << ", Please try again > ");  // if D is invalid, print ", Please try again > " and loop
