@@ -3,10 +3,8 @@
 #include <cstring>
 #include <iomanip>
 #include "OnShelf.h"
-#include "Good.h"
-#include "ReadWrite.h"
 
-namespace oop244{
+namespace oop244 {
 
   OnShelf::OnShelf() : Good("", "", 0, 1, true) {
   }
@@ -17,11 +15,11 @@ namespace oop244{
     return file;
   }
 
-  std::fstream& OnShelf::load(fstream& file) {
+  std::fstream& OnShelf::load(std::fstream& file) {
     char u[MAX_UPC_LEN];
     char n[MAX_UPC_LEN];
     double p;
-    bool t;
+    int t = 0;
     int q;
     int qn;
 
@@ -41,33 +39,37 @@ namespace oop244{
     upc(u);
     name(n);
     price(p);
-    taxed(t);
+    if (t) {
+      taxed(true);
+    } else {
+      taxed(false);
+    }
     quantity(q);
     qtyNeeded(qn);
 
     return file;
   }
 
-  std::ostream& OnShelf::display(ostream& ostr, bool linear) const {
+  std::ostream& OnShelf::display(std::ostream& os, bool linear) const {
     if(_err.isClear() == false) {
       os << _err.message();
     } else if(linear) {
-      os << setfill(' ') << left << setw(MAX_UPC_LEN) << upc() << '|'
-         << setw(20) << name() << '|'
-         << right << setw(7) << fixed << showpoint << setprecision(2) << cost() << '|';
-      if(taxed() == true) {
-        os << set(3) << taxed() << '|';
+      os << std::setfill(' ') << std::left << std::setw(MAX_UPC_LEN) << upc() << '|'
+         << std::setw(20) << name() << '|'
+         << std::right << std::setw(7) << std::fixed << std::showpoint << std::setprecision(2) << cost() << '|';
+      if(taxed()) {
+        os << " t |";
       } else {
-        os << set(3) << '|';
+        os << "   |";
       }
-      os << setw(4) << quantity() << '|'
-         << setw(4) << qtyNeeded() << '|' << std::endl;
+      os << std::setw(4) << quantity() << '|'
+         << std::setw(4) << qtyNeeded() << '|' << std::endl;
     } else {
       os << "Upc: " << upc() << std::endl
          << "Name: " << name() << std::endl
-         << "Price: " << price() << std::end;
+         << "Price: " << price() << std::endl;
       if (taxed() == true) {
-        os << "Price after tax: " << (TAX + 1) * price << std::endl;
+        os << "Price after tax: " << (TAX + 1) * price() << std::endl;
       } else {
         os << "Price after tax: N/A" << std::endl;
       }
@@ -77,22 +79,73 @@ namespace oop244{
     return os;
   }
 
-  std::istream& OnShelf::conInput(istream& istr) {
+  std::istream& OnShelf::conInput(std::istream& is) {
     char u[MAX_UPC_LEN];
     char n[MAX_UPC_LEN];
     double p;
-    bool t;
+    char t;
     int q;
     int qn;
 
     if (is.fail()==false) {
-      _err.clear();
-      cout << "Perishable Item Entry: " << endl;
 
-      cout << "upc: ";
+      _err.clear();
+      std::cout << "OnShelf Good Item: " << std::endl;
+
+      std::cout << "upc: ";
       is >> u;
       if (is.fail()==false) {
-        upc(s);
+        upc(u);
       }
+
+      std::cout << "name: ";
+      is >> n;
+      if (is.fail()==false) {
+        name(n);
+      }
+
+      std::cout << "Price: ";
+      is >> p;
+      if (is.fail()) {
+        _err.message("Invalid Price Entry");
+      } else {
+        price(p);
+      }
+
+      if (_err.isClear()) {
+        std::cout << "Taxed: ";
+        is >> t;
+        if (t == 'Y' || t == 'y') {
+          taxed(true);
+        } else if (t == 'N' || t == 'n') {
+          taxed(false);
+        } else {
+          _err.message("Invalid Taxed Entry, (y)es or (n)o");
+          is.setstate(std::ios::failbit);
+        }
+      }
+
+      if (_err.isClear()) {
+        std::cout << "Quantity On Hand: ";
+        is >> q;
+        if (is.fail()) {
+          _err.message("Invalid Quantity Entry");
+        } else {
+          quantity(q);
+        }
+      }
+
+      if (_err.isClear()) {
+        std::cout << "Quantity Needed: ";
+        is >> qn;
+        if (is.fail()) {
+          _err.message("Invalid Quantity Needed Entry");
+        } else {
+          qtyNeeded(qn);
+        }
+      }
+    }
+
+    return is;
   }
 }

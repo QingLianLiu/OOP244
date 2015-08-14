@@ -1,8 +1,10 @@
 #ifndef __244_OnShelf_H__
 #define __244_OnShelf_H__
 #include <iostream>
+#include "Good.h"
+#include "ErrorMessage.h"
 
-namespace oop244{
+namespace oop244 {
   class OnShelf : public Good {
     private:
       ErrorMessage _err;
