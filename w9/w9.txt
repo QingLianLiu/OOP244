@@ -1,0 +1,165 @@
+Script started on Tue Jul 28 21:31:37 2015
+[?1034hbash-3.2$ whoami
+larissa
+bash-3.2$ ct[Kat Vehicle.h
+/* OOP244 -Workshop 9
+ * Student: Larissa de Jesus Voigt
+ * Student Number: 024769143 */
+
+#include <iostream>
+#pragma once
+
+class Vehicle {
+  private:
+    double speed;
+  protected:
+    double getSpeed() const;
+    void setSpeed(double);
+  public:
+    Vehicle();
+    virtual ~Vehicle() {};
+    virtual void accelerate() = 0;
+    virtual void brake() = 0;
+    virtual void display(std::ostream&) const = 0;
+};
+
+void move(Vehicle&);
+void show(const Vehicle&);
+bash-3.2$ cat Vehicle.h[Kcpp[C
+#include "Vehicle.h"
+
+Vehicle::Vehicle() {
+  speed = 0;
+}
+
+double Vehicle::getSpeed() const {
+  return speed;
+}
+
+void Vehicle::setSpeed(double s) {
+  if(s < 0) {
+    speed = 0.0;
+  } else {
+    speed = s;
+  }
+}
+
+void move(Vehicle& v) {
+  v.accelerate();
+}
+
+void show(const Vehicle& v) {
+  v.display(std::cout);
+}
+bash-3.2$ cat Bus.h
+#include <iostream>
+#include "Vehicle.h"
+
+class Bus : public Vehicle {
+  private:
+    int capacity;
+  public:
+    Bus();
+    Bus(double, int);
+    ~Bus() {};
+    void accelerate();
+    void brake();
+    void display(std::ostream&) const;
+};
+bash-3.2$ cat Bus.h[Kcpp
+#include "Bus.h"
+
+Bus::Bus() {
+  setSpeed(0);
+}
+
+Bus::Bus(double s, int c) {
+  setSpeed(s);
+  capacity = c;
+}
+
+void Bus::accelerate() {
+  double speed = getSpeed();
+  speed += 20;
+  setSpeed(speed);
+}
+
+void Bus::brake() {
+  double speed = getSpeed();
+  if(speed >= 10) {
+    speed -= 10;
+  } else {
+    speed = 0;
+  }
+  setSpeed(speed);
+}
+
+void Bus::display(std::ostream& os) const {
+  double speed = getSpeed();
+  os << "This bus has a total capacity of " << capacity <<
+    " passengers and a speed of " << speed << " after accelerating and braking" << std::endl;
+}
+
+bash-3.2$ cat Truck.h 
+#include <iostream>
+#include "Vehicle.h"
+
+class Truck : public Vehicle {
+  private:
+    bool tow;
+  protected:
+    bool getTow() const;
+  public:
+    Truck();
+    Truck(double, bool);
+    ~Truck() {};
+    void accelerate();
+    void brake();
+    void display(std::ostream&) const;
+};
+bash-3.2$ cat Truck.h [K[Kcpp
+#include "Truck.h"
+
+Truck::Truck() {
+  setSpeed(0);
+  tow = false;
+}
+
+Truck::Truck(double s, bool t) {
+  setSpeed(s);
+  tow = t;
+}
+
+void Truck::accelerate() {
+  double speed = getSpeed();
+  speed += 50;
+  setSpeed(speed);
+}
+
+void Truck::brake() {
+  double speed = getSpeed();
+  if(speed >= 20) {
+    speed -= 20;
+  } else {
+    speed = 0;
+  }
+  setSpeed(speed);
+}
+
+void Truck::display(std::ostream& os) const {
+  double speed = getSpeed();
+  const char *towed = "can";
+  if (!tow) {
+    towed = "cannot";
+  }
+  os << "This truck is going " << speed << " after acceleration and braking, and it "
+    << towed << " be used to tow." << std::endl;
+}
+bash-3.2$ g++ -o 9[Kw9 main.cpp v[KVehicle.cpp Bus.cpp Truck.cpp 
+bash-3.2$ ./w9
+This bus has a total capacity of 78 passengers and a speed of 40 after accelerating and braking
+This truck is going 80 after acceleration and braking, and it can be used to tow.
+bash-3.2$ exit
+exit
+
+Script done on Tue Jul 28 21:33:25 2015

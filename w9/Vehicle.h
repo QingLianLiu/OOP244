@@ -1,4 +1,6 @@
-//Workshop 9
+/* OOP244 -Workshop 9
+ * Student: Larissa de Jesus Voigt
+ * Student Number: 024769143 */
 
 #include <iostream>
 #pragma once

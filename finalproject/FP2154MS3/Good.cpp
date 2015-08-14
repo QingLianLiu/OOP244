@@ -103,7 +103,7 @@ namespace oop244 {
   double Good::cost() const {
     double cost = _price;
     if(_taxed) {
-      cost *= TAX;
+      cost *= TAX + 1;
     }
     return cost;
   }
