@@ -2,26 +2,43 @@
 #include <fstream>
 #include <cstring>
 #include <iomanip>
-#include "OnShelf.h"
 
-namespace oop244 {
+#include "CustomMade.h"
 
-  OnShelf::OnShelf() : Good("", "", 0, 1, true) {
+namespace oop244{
+
+  CustomMade::CustomMade() : Good("", "", 0, 1, true) {
   }
 
-  std::fstream& OnShelf::store(std::fstream& file) const {
-    file << 'S' << ',' << upc() << ',' << name() << ',' << price() << ',' << taxed()
-      << ',' << quantity() << ',' << qtyNeeded() << std::endl;
+  const Date& CustomMade::delivery() const {
+    return _delivery;
+  }
+
+  void CustomMade::delivery(const Date& d) {
+    _delivery = d;
+  }
+
+  std::fstream& CustomMade::store(std::fstream& file) const {
+    file  << 'C'         << ','
+          << upc()       << ','
+          << name()      << ','
+          << price()     << ','
+          << taxed()     << ','
+          << quantity()  << ','
+          << qtyNeeded() << ','
+          << delivery()
+          << std::endl;
     return file;
   }
 
-  std::fstream& OnShelf::load(std::fstream& file) {
+  std::fstream& CustomMade::load(std::fstream& file) {
     char u[MAX_LINE_LEN];
     char n[MAX_LINE_LEN];
     double p;
     int t = 0;
     int q;
     int qn;
+    Date d;
 
     file.getline(u, MAX_LINE_LEN, ',');
     file.getline(n, MAX_LINE_LEN, ',');
@@ -32,6 +49,8 @@ namespace oop244 {
     file >> q;
     file.ignore();
     file >> qn;
+    file.ignore();
+    file >> d;
     file.ignore();
 
     //Call Setters
@@ -46,11 +65,12 @@ namespace oop244 {
     }
     quantity(q);
     qtyNeeded(qn);
+    delivery(d);
 
     return file;
   }
 
-  std::ostream& OnShelf::display(std::ostream& os, bool linear) const {
+  std::ostream& CustomMade::display(std::ostream& os, bool linear) const {
     if(_err.isClear() == false) {
       os << _err.message();
     } else if(linear) {
@@ -63,7 +83,8 @@ namespace oop244 {
         os << "   |";
       }
       os << std::setw(4) << quantity() << '|'
-         << std::setw(4) << qtyNeeded() << '|' << std::endl;
+         << std::setw(4) << qtyNeeded() << '|'
+         << delivery() << std::endl;
     } else {
       os << "Upc: " << upc() << std::endl
          << "Name: " << name() << std::endl
@@ -74,18 +95,20 @@ namespace oop244 {
         os << "Price after tax: N/A" << std::endl;
       }
       os << "Quantity on Hand: " << quantity() << std::endl
-         << "Quantity Needed: " << qtyNeeded() << std::endl;
+         << "Quantity Needed: " << qtyNeeded() << std::endl
+         << "Delivery Date:"  << delivery() << std::endl;
     }
     return os;
   }
 
-  std::istream& OnShelf::conInput(std::istream& is) {
+  std::istream& CustomMade::conInput(std::istream& is) {
     char u[MAX_UPC_LEN];
     char n[MAX_UPC_LEN];
     double p;
     char t;
     int q;
     int qn;
+    Date dt;
 
     if (is.fail()==false) {
 
@@ -144,8 +167,28 @@ namespace oop244 {
           qtyNeeded(qn);
         }
       }
-    }
 
+      if (_err.isClear()) {
+        std::cout << "Delivery date (YYYY/MM/DD) : ";
+        is >> dt;
+
+        if (dt.bad()) {
+          if (dt.errCode()==CIN_FAILED) {
+            _err.message("Invalid Date Entry");
+          } else if (dt.errCode()==YEAR_ERROR) {
+            _err.message("Invalid Year in Date Entry");
+          } else if (dt.errCode()==MON_ERROR) {
+            _err.message("Invalid Month in Date Entry");
+          } else if (dt.errCode()==DAY_ERROR) {
+            _err.message("Invalid Day in Date Entry");
+          }
+          is.setstate(std::ios::failbit);
+        } else {
+          delivery(dt);
+        }
+      }
+    }
     return is;
   }
+
 }
