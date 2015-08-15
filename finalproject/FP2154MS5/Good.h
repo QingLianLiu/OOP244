@@ -44,12 +44,10 @@ namespace oop244{
       int operator+=(int);
 };
 
-  // Helper operator overloads
-  double operator+=(double&, const Good&);
-
+  std::ostream& operator<<(std::ostream& os, const oop244::Good& RO);
+  std::istream& operator>>(std::istream& is, oop244::Good& RO);
+  double operator+=(double&, const oop244::Good&);
 }
 
-std::ostream& operator<<(std::ostream& os, const oop244::Good& RO);
-std::istream& operator>>(std::istream& is, oop244::Good& RO);
 
 #endif

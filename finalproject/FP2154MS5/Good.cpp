@@ -122,21 +122,21 @@ namespace oop244 {
       delete _name;
     }
   }
-}
 
-//Non-member IO operator overloads
+  //Non-member IO operator overloads
 
-std::ostream& operator<<(std::ostream& os, const oop244::Good& RO){
-  return RO.display(os, true);
-}
+  std::ostream& operator<<(std::ostream& os, const oop244::Good& RO){
+    return RO.display(os, true);
+  }
 
-std::istream& operator>>(std::istream& is, oop244::Good& RO){
-  return RO.conInput(is);
-}
+  std::istream& operator>>(std::istream& is, oop244::Good& RO){
+    return RO.conInput(is);
+  }
 
-// Non-member operator overloads
-double operator+=(double &d, const oop244::Good& V) {
-  d += V.cost() * V.quantity();
-  return d;
+  // Non-member operator overloads
+  double operator+=(double &d, const oop244::Good& V) {
+    d += V.cost() * V.quantity();
+    return d;
+  }
 }
 

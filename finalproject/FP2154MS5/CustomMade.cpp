@@ -102,8 +102,8 @@ namespace oop244{
   }
 
   std::istream& CustomMade::conInput(std::istream& is) {
-    char u[MAX_UPC_LEN];
-    char n[MAX_UPC_LEN];
+    char u[MAX_LINE_LEN];
+    char n[MAX_LINE_LEN];
     double p;
     char t;
     int q;
@@ -115,14 +115,15 @@ namespace oop244{
       _err.clear();
       std::cout << "OnShelf Good Item: " << std::endl;
 
+      is.ignore();
       std::cout << "upc: ";
-      is >> u;
+      is.getline(u, MAX_LINE_LEN, '\n');
       if (is.fail()==false) {
         upc(u);
       }
 
       std::cout << "name: ";
-      is >> n;
+      is.getline(n, MAX_LINE_LEN, '\n');
       if (is.fail()==false) {
         name(n);
       }
